@@ -1,7 +1,6 @@
 #!/bin/sh
 # Copyright 2021 n1c00o. MIT License. See https://github.com/n1c00o/golang_install
 set -eu
-IFS=$'\n\t'
 
 GOPATH="$HOME/go"
 GOUTIL="$HOME/.go"
@@ -23,7 +22,7 @@ Darwin)
   ;;
 esac
 
-if [[ os == "windows" ]]; then
+if [ "$OS" = "windows" ]; then
   PKG_END=zip
 else
   PKG_END=tar.gz
@@ -50,7 +49,7 @@ URL="https://golang.org/dl/$PKG"
 
 mkdir -p "$GOUTIL"
 
-if $(which go &>/dev/null); then
+if which go >/dev/null; then
   OLD_GO_VERSION=$(go version | grep -oP "go[0-9.]+")
 else
   OLD_GO_VERSION=""
@@ -61,7 +60,7 @@ fi
 # otherwise, simply copy
 echo "Checking for existing installation in $GOPATH"
 
-if ! [[ "$OLD_GO_VERSION" == "$LATEST" ]]; then
+if ! [ "$OLD_GO_VERSION" = "$LATEST" ]; then
   if [ -z "$OLD_GO_VERSION" ]; then
     echo "No Go installation found"
   else
@@ -76,7 +75,7 @@ if ! [[ "$OLD_GO_VERSION" == "$LATEST" ]]; then
   fi
 
   echo "Unpacking latest version $LATEST into $GOPATH..."
-  tar -C $HOME -xzf "$GOUTIL/$PKG"
+  tar -C "$HOME" -xzf "$GOUTIL/$PKG"
 
   echo "Installed Go $LATEST successfully!"
   echo "Manually add the following to your shell profile (.bashrc, .zshrc...)"
