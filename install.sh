@@ -55,29 +55,45 @@ else
 	OLD_GO_VERSION=""
 fi
 
+remove_old_install() {
+	echo "Removing old installation..."
+	rm -rf "$GOPATH"
+}
+
+FORCE=0
+if [ $# -eq 1 ]; then
+	if [ "$1" = "-f" ]; then
+		FORCE=1
+	fi
+fi
 # Check for cache
 # if not, download and cache
 # otherwise, simply copy
 echo "Checking for existing installation in $GOPATH"
 
-if ! [ "$OLD_GO_VERSION" = "$LATEST" ]; then
+if [ "$OLD_GO_VERSION" = "$LATEST" ]; then
 	if [ -z "$OLD_GO_VERSION" ]; then
 		echo "No Go installation found"
 	else
 		echo "Current Go installation is not the latest: $OLD_GO_VERSION -> $LATEST"
-		echo "Would you like to remove the existing installation? [y/N] "
-		read -r yn
 
-		case "$yn" in
-		[Yy]*)
-			echo "Removing old installation..."
-			rm -rf "$GOPATH"
-			;;
-		*)
-			echo "Installation cancelled..."
-			exit 0
-			;;
-		esac
+		if [ $FORCE -eq 1 ]; then
+			remove_old_install
+		else
+			echo "Would you like to remove the existing installation? [y/N] "
+			read -r yn
+
+			case "$yn" in
+			[Yy]*)
+				remove_old_install
+				;;
+			*)
+				echo "Installation cancelled..."
+				exit 0
+				;;
+			esac
+		fi
+
 	fi
 
 	if ! [ -e "$GOUTIL/$PKG" ]; then

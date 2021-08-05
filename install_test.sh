@@ -4,5 +4,5 @@ set -eu
 
 # Remove existing golang installation if any
 rm -rf "$HOME/go"
-sh ./install.sh
+sh ./install.sh -f
 "$HOME"/go/bin/go version
